@@ -88,7 +88,23 @@
       return box;
     }
 
+    function buildDeepLink() {
+      let link = "camalert://oauth-callback?code=" + encodeURIComponent(code);
+      if (state) link += "&state=" + encodeURIComponent(state);
+      return link;
+    }
+
     if (code) {
+      // 앱이 설치돼 있으면 바로 앱으로 돌아가서 로그인을 마무리한다.
+      // (자동 이동이 막히는 브라우저/상황을 위해 아래에 수동 버튼과 코드 복사도 남겨둔다.)
+      window.location.href = buildDeepLink();
+
+      const manualBtn = document.createElement("button");
+      manualBtn.textContent = "테슬라캠 앱으로 돌아가기";
+      manualBtn.style.marginBottom = "14px";
+      manualBtn.onclick = () => { window.location.href = buildDeepLink(); };
+      container.appendChild(manualBtn);
+
       container.appendChild(makeBox("code", code));
       if (state) container.appendChild(makeBox("state", state));
     } else if (error) {
